@@ -24,9 +24,132 @@ typedef IndexedFeedBackWidgetBuilder = Widget Function(
 ///
 /// All [children] must have a key.
 ///
+// class ReorderableStaggeredLayout extends StatefulWidget {
+//   /// Creates a reorderable list.
+//   ReorderableStaggeredLayout({
+//     Key? key,
+//     this.header,
+//     required this.children,
+//     required this.onReorder,
+//     this.scrollController,
+//     this.scrollDirection = Axis.vertical,
+//     this.padding,
+//     this.crossAxisCount = 3,
+//     this.reverse = false,
+//     this.longPressToDrag = true,
+//     this.mainAxisSpacing = 0.0,
+//     this.crossAxisSpacing = 0.0,
+//     this.feedBackWidgetBuilder,
+//   }) : super(key: key);
+//
+//   /// A non-reorderable header widget to show before the list.
+//   ///
+//   /// If null, no header will appear before the list.
+//   final Widget? header;
+//
+//   /// The widgets to display.
+//   final List<StaggeredGridTile> children;
+//
+//   /// The [Axis] along which the list scrolls.
+//   ///
+//   /// List [children] can only drag along this [Axis].
+//   final Axis scrollDirection;
+//
+//   /// Creates a [ScrollPosition] to manage and determine which portion
+//   /// of the content is visible in the scroll view.
+//   ///
+//   /// This can be used in many ways, such as setting an initial scroll offset,
+//   /// (via [ScrollController.initialScrollOffset]), reading the current scroll position
+//   /// (via [ScrollController.offset]), or changing it (via [ScrollController.jumpTo] or
+//   /// [ScrollController.animateTo]).
+//   final ScrollController? scrollController;
+//
+//   /// The amount of space by which to inset the [children].
+//   final EdgeInsets? padding;
+//
+//   /// Whether the scroll view scrolls in the reading direction.
+//   ///
+//   /// For example, if the reading direction is left-to-right and
+//   /// [scrollDirection] is [Axis.horizontal], then the scroll view scrolls from
+//   /// left to right when [reverse] is false and from right to left when
+//   /// [reverse] is true.
+//   ///
+//   /// Similarly, if [scrollDirection] is [Axis.vertical], then the scroll view
+//   /// scrolls from top to bottom when [reverse] is false and from bottom to top
+//   /// when [reverse] is true.
+//   ///
+//   /// Defaults to false.
+//   final bool reverse;
+//
+//   /// Called when a list child is dropped into a new position to shuffle the
+//   /// underlying list.
+//   ///
+//   /// This [ReorderableStaggeredLayout] calls [onReorder] after a list child is dropped
+//   /// into a new position.
+//   final ReorderCallback onReorder;
+//
+//   /// Used when we are building a GridView
+//   final int crossAxisCount;
+//
+//   /// Used when we are building a GridView
+//   final bool longPressToDrag;
+//
+//   /// Used when we are building a GridView
+//   final double mainAxisSpacing;
+//
+//   /// Used when we are building a GridView
+//   final double crossAxisSpacing;
+//
+//   /// Feedback widget
+//   final IndexedFeedBackWidgetBuilder? feedBackWidgetBuilder;
+//
+//   @override
+//   _ReorderableStaggeredLayoutState createState() => _ReorderableStaggeredLayoutState();
+// }
+//
+// /// This top-level state manages an Overlay that contains the list and
+// /// also any Draggables it creates.
+// ///
+// /// _ReorderableListContent manages the list itself and reorder operations.
+// ///
+// /// The Overlay doesn't properly keep state by building new overlay entries,
+// /// and so we cache a single OverlayEntry for use as the list layer.
+// /// That overlay entry then builds a _ReorderableListContent which may
+// /// insert Draggables into the Overlay above itself.
+// class _ReorderableStaggeredLayoutState extends State<ReorderableStaggeredLayout> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Overlay(
+//       key: GlobalKey(debugLabel: '$ReorderableStaggeredLayout overlay'),
+//       initialEntries: <OverlayEntry>[
+//         OverlayEntry(
+//           opaque: true,
+//           builder: (BuildContext context) {
+//             return _ReorderableListContent(
+//               header: widget.header,
+//               children: widget.children,
+//               scrollController: widget.scrollController,
+//               scrollDirection: widget.scrollDirection,
+//               onReorder: widget.onReorder,
+//               padding: widget.padding,
+//               reverse: widget.reverse,
+//               crossAxisCount: widget.crossAxisCount,
+//               longPressToDrag: widget.longPressToDrag,
+//               mainAxisSpacing: widget.mainAxisSpacing,
+//               crossAxisSpacing: widget.crossAxisSpacing,
+//               feedBackWidgetBuilder: widget.feedBackWidgetBuilder,
+//             );
+//           },
+//         )
+//       ],
+//     );
+//   }
+// }
+
+/// This widget is responsible for the inside of the Overlay in the
+/// ReorderableItemsView.
 class ReorderableStaggeredLayout extends StatefulWidget {
-  /// Creates a reorderable list.
-  ReorderableStaggeredLayout({
+  const ReorderableStaggeredLayout({
     Key? key,
     this.header,
     required this.children,
@@ -40,7 +163,8 @@ class ReorderableStaggeredLayout extends StatefulWidget {
     this.mainAxisSpacing = 0.0,
     this.crossAxisSpacing = 0.0,
     this.feedBackWidgetBuilder,
-  }) : super(key: key);
+    this.physics
+  });
 
   /// A non-reorderable header widget to show before the list.
   ///
@@ -49,6 +173,9 @@ class ReorderableStaggeredLayout extends StatefulWidget {
 
   /// The widgets to display.
   final List<StaggeredGridTile> children;
+
+  /// Physics for scrollcontroller
+  final ScrollPhysics? physics;
 
   /// The [Axis] along which the list scrolls.
   ///
@@ -107,82 +234,8 @@ class ReorderableStaggeredLayout extends StatefulWidget {
   _ReorderableStaggeredLayoutState createState() => _ReorderableStaggeredLayoutState();
 }
 
-/// This top-level state manages an Overlay that contains the list and
-/// also any Draggables it creates.
-///
-/// _ReorderableListContent manages the list itself and reorder operations.
-///
-/// The Overlay doesn't properly keep state by building new overlay entries,
-/// and so we cache a single OverlayEntry for use as the list layer.
-/// That overlay entry then builds a _ReorderableListContent which may
-/// insert Draggables into the Overlay above itself.
-class _ReorderableStaggeredLayoutState extends State<ReorderableStaggeredLayout> {
-  @override
-  Widget build(BuildContext context) {
-    return Overlay(
-      key: GlobalKey(debugLabel: '$ReorderableStaggeredLayout overlay'),
-      initialEntries: <OverlayEntry>[
-        OverlayEntry(
-          opaque: true,
-          builder: (BuildContext context) {
-            return _ReorderableListContent(
-              header: widget.header,
-              children: widget.children,
-              scrollController: widget.scrollController,
-              scrollDirection: widget.scrollDirection,
-              onReorder: widget.onReorder,
-              padding: widget.padding,
-              reverse: widget.reverse,
-              crossAxisCount: widget.crossAxisCount,
-              longPressToDrag: widget.longPressToDrag,
-              mainAxisSpacing: widget.mainAxisSpacing,
-              crossAxisSpacing: widget.crossAxisSpacing,
-              feedBackWidgetBuilder: widget.feedBackWidgetBuilder,
-            );
-          },
-        )
-      ],
-    );
-  }
-}
-
-/// This widget is responsible for the inside of the Overlay in the
-/// ReorderableItemsView.
-class _ReorderableListContent extends StatefulWidget {
-  const _ReorderableListContent({
-    required this.header,
-    required this.children,
-    required this.scrollController,
-    required this.scrollDirection,
-    required this.padding,
-    required this.onReorder,
-    required this.reverse,
-    required this.crossAxisCount,
-    required this.longPressToDrag,
-    required this.mainAxisSpacing,
-    required this.crossAxisSpacing,
-    required this.feedBackWidgetBuilder,
-  });
-
-  final Widget? header;
-  final List<StaggeredGridTile> children;
-  final ScrollController? scrollController;
-  final Axis scrollDirection;
-  final EdgeInsets? padding;
-  final ReorderCallback onReorder;
-  final bool reverse;
-  final int crossAxisCount;
-  final bool longPressToDrag;
-  final double mainAxisSpacing;
-  final double crossAxisSpacing;
-  final IndexedFeedBackWidgetBuilder? feedBackWidgetBuilder;
-
-  @override
-  _ReorderableListContentState createState() => _ReorderableListContentState();
-}
-
-class _ReorderableListContentState extends State<_ReorderableListContent>
-    with TickerProviderStateMixin<_ReorderableListContent> {
+class _ReorderableStaggeredLayoutState extends State<ReorderableStaggeredLayout>
+    with TickerProviderStateMixin<ReorderableStaggeredLayout> {
   /// The extent along the widget.scrollDirection axis to allow a child to
   /// drop into when the user reorders list children.
   ///
@@ -716,6 +769,7 @@ class _ReorderableListContentState extends State<_ReorderableListContent>
         return SingleChildScrollView(
           scrollDirection: widget.scrollDirection,
           padding: widget.padding,
+          physics: widget.physics,
           controller: _scrollController,
           reverse: widget.reverse,
           child: _buildContainerForScrollDirection(
