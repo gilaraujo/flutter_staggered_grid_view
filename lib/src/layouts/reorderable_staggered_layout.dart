@@ -608,34 +608,34 @@ class _ReorderableListContentState extends State<_ReorderableListContent>
 
       // We open up a space under where the dragging widget currently is to
       // show it can be dropped.
-      if (_currentIndex == index &&
-          _dragging != null) {
-        return _buildContainerForScrollDirection(
-          children: <Widget>[
-            SizeTransition(
-              sizeFactor: _entranceController,
-              axis: widget.scrollDirection,
-              child: spacing,
-            ),
-            child,
-          ],
-        );
-      }
+      // if (_currentIndex == index &&
+      //     _dragging != null) {
+      //   return _buildContainerForScrollDirection(
+      //     children: <Widget>[
+      //       SizeTransition(
+      //         sizeFactor: _entranceController,
+      //         axis: widget.scrollDirection,
+      //         child: spacing,
+      //       ),
+      //       child,
+      //     ],
+      //   );
+      // }
       // We close up the space under where the dragging widget previously was
       // with the ghostController animation.
-      if (_ghostIndex == index &&
-          _dragging != null) {
-        return _buildContainerForScrollDirection(
-          children: <Widget>[
-            SizeTransition(
-              sizeFactor: _ghostController,
-              axis: widget.scrollDirection,
-              child: spacing,
-            ),
-            child,
-          ],
-        );
-      }
+      // if (_ghostIndex == index &&
+      //     _dragging != null) {
+      //   return _buildContainerForScrollDirection(
+      //     children: <Widget>[
+      //       SizeTransition(
+      //         sizeFactor: _ghostController,
+      //         axis: widget.scrollDirection,
+      //         child: spacing,
+      //       ),
+      //       child,
+      //     ],
+      //   );
+      // }
 
       if (_ghostIndex == index &&
           _dragging != null) {
